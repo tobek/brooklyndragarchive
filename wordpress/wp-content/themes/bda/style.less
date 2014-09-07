@@ -238,6 +238,11 @@ img {
 .mobile-selected-menu {
   display: none;
 }
+@media screen and (max-width: @fullwidth) {
+  #menu .menu {
+    padding-top: 15px;
+  }
+}
 @media screen and (max-width: 768px) {
   #header #branding {
     float: none;
@@ -297,6 +302,11 @@ img {
         }
       }
     }
+  }
+}
+@media screen and (min-width: 767px) {
+  #menu .menu {
+    display: block !important;
   }
 }
 @media screen and (max-width: 420px) {
