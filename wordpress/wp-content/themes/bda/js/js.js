@@ -1,4 +1,7 @@
 var DURATION = 400;
+var DEBUG = window.location.search.indexOf('testing') !== -1;
+var IOS = (/iPhone|iPod|iPad/i).test(navigator.userAgent);
+if (DEBUG) IOS = true;
 
 (function($, window) {
   // on DOM load:
@@ -55,10 +58,6 @@ var DURATION = 400;
     $(".page-my-uploads .delete").on("click", function() {
       return confirm("Are you sure you want to delete this upload?");
     });
-    // hack: fu_additional_html action in frontend-uploader is after submit better, i wish it was before. make it so:
-    var $submitContainer = $('.ugc-input-wrapper input[type=submit]').closest('.ugc-input-wrapper');
-    $submitContainer.next().remove(); // extra <br>
-    $submitContainer.insertAfter($('#bda-fu-uploader-extras'));
 
     $("article .like").on("click", function() {
       if (window.WPNotLoggedIn) {
@@ -139,82 +138,127 @@ var DURATION = 400;
     });
 
 
-    // capture and divert my-uploads submission if it's a video
+    /**
+     * capture and divert my-uploads submission if it's a video
+     * for everything except iOS, we use a single file input. if the put a video in it, that file is copied to a hidden form that submits to youtube, and then the original form is afterwards used to submit a new post
+     * on iOS, we can't copie files from input elements, it seems. so instead we shimmy stuff around (see onload hacks below) and expose the youtube upload form's file input, changing logic a little
+     */
     $('#ugc-media-form [type=submit]').on('click', function(e) {
-      // SET LOADING ICON
       var files = $("#ugc-media-form [type=file]")[0].files;
-      if (!files[0]) return true; // carry on
-      var mimeType = files[0].type;
-      if (mimeType.indexOf('video') !== 0) return true; // carry on
+      if (!files[0]) {
+        if (IOS && $("#upload-yt-video [type=file]")[0].files[0]) {
+          // we're good, they've selected a video
+        }
+        else {
+          alert('You forgot to select a file to upload!');
+          e.preventDefault();
+          return false;
+        }
+      }
 
-      $("#upload-yt-video [type=file]")[0].files = files;
+      $('.page-my-uploads article .loader').fadeIn(DURATION/2);
+
+      if (!IOS) {
+        var mimeType = files[0].type;
+        if (mimeType.indexOf('video') !== 0) return true; // carry on
+
+        // non iOS they'll have already put the file in here
+        $("#upload-yt-video [type=file]")[0].files = files;
+      }
+      else if (IOS && files[0]) {
+        return true; // iOS image, carry on
+      }
+
       $("#upload-yt-video").submit(); // will be captured by ajaxForm
 
       e.preventDefault();
       return false;
     });
-    $('#upload-yt-video').ajaxForm(function(res, status) { 
-      if (status !== 'success' || !res.id) {
-        alert('Sorry, there was a problem uploading the video! Please try again later, and get in touch with us if it\'s still not working.\n\n---\n\nResponse status: ' + status + '\nResponse:\n' + JSON.stringify(res));
-        return;
-      }
-
-      console.log('video uploaded to youtube! response:', res);
-
-      var username = $("#upload-yt-video [name=username]").val();
-
-      var action = $('#upload-yt-video').attr('action');
-      var token = action.substring(action.indexOf('access_token=')+13); // only works if this is the last querys tring, which it is now
-      var title = username + '\'s Upload, ' + new Date().toDateString();
-
-      var performers = $('#ugc-media-form [name=performer]').val();
-      if (performers) performers = performers.split(',');
-      var eventName = $('#ugc-media-form [name=event]').val();
-      if (eventName) eventName = eventName.split(',');
-      var venue = $('#ugc-media-form [name=venue]').val();
-      if (venue) venue = venue.split(',');
-
-      var description = $('#ugc-media-form [name=post_content]').val() + '\n\n';
-      if (performers) description += "Performers: " + performers.join(', ') + '\n';
-      if (eventName) description += "Event: " + eventName.join(', ') + '\n';
-      if (venue) description += "Venue: " + venue.join(', ') + '\n';
-      description += "Uploaded by: " + username;
-
-      updateYouTubeVideo({
-        id: res.id,
-        token: token,
-        title: title,
-        description: description
-      }, function(err, res) {
-        if (err) {
-          alert('Sorry, there was a problem uploading the video! Please try again later, and get in touch with us if it\'s still not working.\n\n---\n\nError while updating video attributes after upload\nError: ' + JSON.stringify(err));
-          console.error(err);
+    $('#upload-yt-video').ajaxForm({
+      success: function(res, status) { 
+        if (status !== 'success' || !res.id) {
+          alert('Sorry, there was a problem uploading the video! Please try again later, and get in touch with us if it\'s still not working.\n\n---\n\nResponse status: ' + status + '\nResponse:\n' + JSON.stringify(res));
+          return;
         }
-        else {
-          console.log('video updated! response:', res);
 
-          // now submit original frontend-uploader form, adding YT video ID and thumbnail URL
-          $("#ugc-media-form [name=youtube_id]").val(res.id);
-          if (res.snippet && res.snippet.thumbnails) {
-            var thumbURL;
-            if (res.snippet.thumbnails.high) thumbURL = res.snippet.thumbnails.high.url;
-            else if (res.snippet.thumbnails.medium) thumbURL = res.snippet.thumbnails.medium.url;
-            else if (res.snippet.thumbnails.default) thumbURL = res.snippet.thumbnails.default.url;
-            if (thumbURL) {
-              $("#ugc-media-form [name=thumb_url]").val(thumbURL);
-            }
+        console.log('video uploaded to youtube! response:', res);
+
+        var username = $("#upload-yt-video [name=username]").val();
+
+        var action = $('#upload-yt-video').attr('action');
+        var token = action.substring(action.indexOf('access_token=')+13); // only works if this is the last querys tring, which it is now
+        var title = username + '\'s Upload, ' + new Date().toDateString();
+
+        var performers = $('#ugc-media-form [name=performer]').val();
+        if (performers) performers = performers.split(',');
+        var eventName = $('#ugc-media-form [name=event]').val();
+        if (eventName) eventName = eventName.split(',');
+        var venue = $('#ugc-media-form [name=venue]').val();
+        if (venue) venue = venue.split(',');
+
+        var description = $('#ugc-media-form [name=post_content]').val() + '\n\n';
+        if (performers) description += "Performers: " + performers.join(', ') + '\n';
+        if (eventName) description += "Event: " + eventName.join(', ') + '\n';
+        if (venue) description += "Venue: " + venue.join(', ') + '\n';
+        description += "Uploaded by: " + username;
+
+        updateYouTubeVideo({
+          id: res.id,
+          token: token,
+          title: title,
+          description: description
+        }, function(err, res) {
+          if (err) {
+            alert('Sorry, there was a problem uploading the video! Please try again later, and get in touch with us if it\'s still not working.\n\n---\n\nError while updating video attributes after upload\nError: ' + JSON.stringify(err));
+            console.error(err);
           }
-          resetFormElement($("#ugc-media-form [type=file]")); // don't submit the video again
-          $("#ugc-media-form").submit();
-        } // end if updating video was successful
-        // TODO hide loading icon
-      });
+          else {
+            console.log('video updated! response:', res);
 
+            // now submit original frontend-uploader form, adding YT video ID and thumbnail URL
+            $("#ugc-media-form [name=youtube_id]").val(res.id);
+            if (res.snippet && res.snippet.thumbnails) {
+              var thumbURL;
+              if (res.snippet.thumbnails.high) thumbURL = res.snippet.thumbnails.high.url;
+              else if (res.snippet.thumbnails.medium) thumbURL = res.snippet.thumbnails.medium.url;
+              else if (res.snippet.thumbnails.default) thumbURL = res.snippet.thumbnails.default.url;
+              if (thumbURL) {
+                $("#ugc-media-form [name=thumb_url]").val(thumbURL);
+              }
+            }
+            resetFormElement($("#ugc-media-form [type=file]")); // don't submit the video again
+            $("#ugc-media-form").submit();
+          } // end if updating video was successful
+        });
+      },
+      uploadProgress: function(e, position, total, percent) {
+        if (percent = 100) $('.loader').html(percent + '%' + '<br><br><br><br>saving post...');
+        else $('.loader').html(percent + '%' + '<br><br><br><br>uploading video...');
+      }
     }); // end handling form ajax response for uploading youtube video
 
-  $('.mobile-selected-menu').on('click', function() {
-    $('#menu .menu').fadeToggle(200);
-  });
+    // hack: fu_additional_html action in frontend-uploader is after submit better, i wish it was before. make it so:
+    var $submitContainer = $('.ugc-input-wrapper input[type=submit]').closest('.ugc-input-wrapper');
+    $submitContainer.next().remove(); // extra <br>
+    $submitContainer.insertAfter($('#bda-fu-uploader-extras'));
+
+    // even more onload hacks
+    $('#ug_video').closest('.ugc-input-wrapper').css('padding', 0).prev().remove(); // extra br from plugin shortcode
+    if (IOS) {
+      $('#ug_photo').attr('accept', 'image/*').before('<br><span class="input-label-hack">Image: </span>');
+      $('[for=ug_photo] br').remove();
+      $('.video-image-label').remove();
+      $('.ugc-notice.success').insertBefore('#upload-yt-video');
+      $('#upload-yt-video').show();
+      $('#ug_video').closest('article').addClass('hack-complete');
+    }
+    else {
+      $('#ug_photo').closest('.ugc-input-wrapper').css('padding-bottom', 0);
+    }
+
+    $('.mobile-selected-menu').on('click', function() {
+      $('#menu .menu').fadeToggle(200);
+    });
 
   }); // end on DOM load
 })(jQuery, window);
