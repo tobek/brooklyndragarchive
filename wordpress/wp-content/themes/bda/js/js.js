@@ -1,7 +1,6 @@
 var DURATION = 400;
 var DEBUG = window.location.search.indexOf('testing') !== -1;
 var IOS = (/iPhone|iPod|iPad/i).test(navigator.userAgent);
-if (DEBUG) IOS = true;
 
 (function($, window) {
   // on DOM load:
@@ -25,6 +24,11 @@ if (DEBUG) IOS = true;
       });
     }
 
+    if ($('#tribe-community-events').length) {
+      $('#tribe-community-events #OrganizerOrganizer').autocomplete({lookup: window.bdaperformer});
+      $('#tribe-community-events .events-community-post-title input').autocomplete({lookup: window.bdaevent});
+      // $('#tribe-community-events #VenueVenue').autocomplete({lookup: window.bdavenue}); // there's already a (better) saved location dropdown
+    }
 
     $('button.request-performer').click(function() {
       $('div.request-performer').slideDown();

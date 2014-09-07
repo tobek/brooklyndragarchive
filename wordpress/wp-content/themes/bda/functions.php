@@ -38,6 +38,35 @@ function bda_change_author_slug_base() {
     $wp_rewrite->author_base = 'uploader';
 }
 
+add_action('save_post', 'bda_add_tribe_fields_to_taxon', 99);
+function bda_add_tribe_fields_to_taxon($post_id) {
+  global $TERM_LIST, $added_tribe_fields_already;
+  if (isset($_POST['community-event'])) {
+    // mysteriously this action gets called more than once
+    if ($added_tribe_fields_already) return;
+    $added_tribe_fields_already = true;
+
+    $event_name = $_POST['post_title'];
+    if ($_POST['venue'] && $_POST['venue']['Venue']) $venue_name = $_POST['venue']['Venue'];
+    if ($_POST['organizer'] && $_POST['organizer']['Organizer']) $performer_name = $_POST['organizer']['Organizer'];
+
+    foreach ($TERM_LIST as $term_type) {
+      $term_name = ${$term_type . '_name'};
+      if ($term_name) {
+        // create taxon term if it doesn't exist already:
+        $term = get_term_by('name', $term_name, $term_type);
+        if (!$term) {
+          $new_term = wp_insert_term($term_name, $term_type);
+          $term = get_term_by('id', $new_term['term_id'], $term_type);
+        }
+
+        // append the term to this 'post'
+        wp_set_object_terms($post_id, $term_name, $term_type, true);
+      }
+    } // end foreach term type
+  } // end if community event
+}
+
 add_action( 'fu_additional_html', 'bda_additional_fields');
 function bda_additional_fields() { ?>
   <div id="bda-fu-uploader-extras">
@@ -85,7 +114,7 @@ function bda_handle_uploads($layout, $result) {
   foreach ($TERM_LIST as $term_type) {
     $term_name = sanitize_text_field($_POST[$term_type]);
     if ($term_name) {
-      wp_set_post_terms($post_id, $term_name, $term_type); // will create if doesn't exist already
+      wp_set_post_terms($post_id, $term_name, $term_type, true); // will create if doesn't exist already, appending to existing terms
     }
   }
 
@@ -348,7 +377,7 @@ function bda_load_scripts() {
     wp_enqueue_style( 'tagit1', get_stylesheet_directory_uri(). '/css/jquery.tagit.css', array() );
     wp_enqueue_style( 'tagit2', get_stylesheet_directory_uri(). '/css/tagit.ui-zendesk.css', array() );
   }
-  else if (is_page('my-profile')) {
+  else if (is_page('my-profile') || tribe_is_community_edit_event_page()) {
     wp_enqueue_script( 'jquery-autocomplete', "//cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.2.7/jquery.devbridge-autocomplete.min.js", array('jquery'), '1.2.7', true );
   }
 

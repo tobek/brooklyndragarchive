@@ -18,10 +18,10 @@
 // for upload auto-complete, print these out
 // TODO cache this somehow or load it differently
 global $my_uploads, $TERM_LIST;
-if ($my_uploads || is_page('my-profile')) {
+if ($my_uploads || is_page('my-profile') || tribe_is_community_edit_event_page()) {
   echo "<script>\n";
   foreach ($TERM_LIST as $term_type) {
-    $all = get_terms($term_type);
+    $all = get_terms($term_type, array('hide_empty' => false));
     $all = array_map(function ($term) { return $term->name; }, $all);
     $json = html_entity_decode(str_replace(array("'", '\u0022'), array("\'", '\\\\u0022'), json_encode($all, JSON_HEX_QUOT)));
     echo "window.bda$term_type = JSON.parse('". $json ."');\n";
