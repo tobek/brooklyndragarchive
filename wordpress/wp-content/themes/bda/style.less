@@ -299,6 +299,14 @@ img {
     }
   }
 }
+@media screen and (max-width: 420px) {
+  #menu {
+    margin-left: 0;
+  }
+  #header #branding #site-title img {
+    padding-left: 15px;
+  }
+}
 
 /* ==== ACCOUNT PAGES === */
 
@@ -631,6 +639,24 @@ article.masonry-item {
     }
     p {
       margin: 10px 0;
+    }
+  }
+}
+@media screen and (max-width: 920px) {
+  .single {
+    article {
+      display: block;
+    }
+    .entry-img {
+      display: block;
+      width: 100%;
+      height: 300px;
+    }
+    .entry-content {
+      display: block;
+    }
+    .entry-img + .entry-content {
+      width: 100%;
     }
   }
 }

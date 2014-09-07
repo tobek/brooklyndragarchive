@@ -99,6 +99,10 @@ if (DEBUG) IOS = true;
       isFitWidth: true,
       duration: DURATION
     });
+    $mContainer.masonry('on', 'layoutComplete', function() {
+      $('#content').addClass('masonry');
+    });
+
     // when images loaded do layout
     $mContainer.imagesLoaded(function() {
       $mContainer.masonry('layout');
@@ -256,9 +260,12 @@ if (DEBUG) IOS = true;
       $('#ug_photo').closest('.ugc-input-wrapper').css('padding-bottom', 0);
     }
 
-    $('.mobile-selected-menu').on('click', function() {
+    $('.mobile-selected-menu').on('click', function(e) {
       $('#menu .menu').fadeToggle(200);
+      e.stopPropagation();
     });
+    $('body').on('click', function(e) { $('#menu .menu').fadeOut(200); });
+    $('#menu .menu').on('click', function(e) { e.stopPropagation(); });
 
   }); // end on DOM load
 })(jQuery, window);
