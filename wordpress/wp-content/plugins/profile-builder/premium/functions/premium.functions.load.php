@@ -124,6 +124,8 @@ function wppb_resize_avatar($userID){
 				//we need to check if the image is not, in fact, smaller then the preset values, or it will give a fatal error
 				$imageSize = getimagesize($imagePath);
 
+				do_action('wppb_before_resize_avatar', $imagePath, $imageSize);
+
 				
 				if (($imageSize[0] > $width) && ($imageSize[1] > $heaight)){
 					$thumb = image_resize($imagePath, $width, $height, $crop);

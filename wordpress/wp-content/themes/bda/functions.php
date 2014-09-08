@@ -396,6 +396,12 @@ function bda_autorotate_image($result) {
   }
   return $result;
 }
+add_action('wppb_before_resize_avatar', 'bda_autorotate_avatar', 0);
+function bda_autorotate_avatar($path) {
+  if ($path) {
+    exec("exifautotran " . escapeshellarg($path));
+  }
+}
 
 add_action( 'wp_ajax_bda_send_email', 'ajax_send_email' );
 function ajax_send_email() {
