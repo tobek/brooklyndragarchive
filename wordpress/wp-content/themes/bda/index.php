@@ -8,10 +8,12 @@
       $author = (get_query_var('author_name')) ? get_user_by('slug', get_query_var('author_name')) : get_userdata(get_query_var('author'));
       $user_id = $author->ID;
       $name = $author->nickname;
+      $title = '<span class="title-taxon">Uploaded by </span>' . $name;
     }
     else {
       $term = get_term_by('slug', $wp_query->query_vars['performer'], 'performer');
       $name = $term->name;
+      $title = $name;
       $user_id = intval($term->description);
     }
 
@@ -28,7 +30,7 @@
       <a href="#" class="icon close"><img src="http://brooklyndragarchive.org/wordpress/wp-content/themes/bda/img/icons/close.png"></a>
     </div>
     <section class="entry-content">
-      <h1><?php echo $name; ?></h1>
+      <h1><?php echo $title; ?></h1>
       <div class="meta">
         <p><?php echo $bio; ?></p>
         <p><a href='<?php echo $url; ?>' target='_blank'><?php echo $url; ?></a></p>
@@ -39,11 +41,11 @@
     else { ?>
   <article class="performer-card format-image masonry-item">
     <section class="entry-content">
-      <h1><?php echo $name; ?></h1>
+      <h1><?php echo $title; ?></h1>
     </section>
   </article>
     <?php } ?>
-  <?php } // end if perfomer taxonomy
+  <?php } // end if perfomer taxonomy or uploader
   if (is_tag() || is_tax('event') || is_tax('venue')) {
     if (is_tag()) {
       $title = single_tag_title('<span class="title-taxon">Tag: </span>', false);
