@@ -265,10 +265,17 @@ var IOS = (/iPhone|iPod|iPad/i).test(navigator.userAgent);
     }
 
     $('.mobile-selected-menu').on('click', function(e) {
-      $('#menu .menu').fadeToggle(200);
+      if ($('#menu .menu').is(':visible')) {
+        $('#menu .menu').fadeOut(200);
+        $('body').off('click', fadeOutMenu);
+      }
+      else {
+        $('#menu .menu').fadeIn(200);
+        $('body').one('click', fadeOutMenu);
+      }
       e.stopPropagation();
     });
-    $('body').on('click', function(e) { $('#menu .menu').fadeOut(200); });
+    function fadeOutMenu() { $('#menu .menu').fadeOut(200); }
     $('#menu .menu').on('click', function(e) { e.stopPropagation(); });
 
   }); // end on DOM load
