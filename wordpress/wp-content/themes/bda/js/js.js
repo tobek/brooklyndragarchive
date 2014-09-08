@@ -59,11 +59,11 @@ var IOS = (/iPhone|iPod|iPad/i).test(navigator.userAgent);
     });
 
 
-    $(".page-my-uploads .delete").on("click", function() {
+    $("#content").on("click", ".page-my-uploads .delete", function() {
       return confirm("Are you sure you want to delete this upload?");
     });
 
-    $("article .like").on("click", function() {
+    $("#content").on("click", "article .like", function() {
       if (window.WPNotLoggedIn) {
         alert('You must be logged in to "like" content');
         return false;
