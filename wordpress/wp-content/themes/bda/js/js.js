@@ -177,6 +177,7 @@ var IOS = (/iPhone|iPod|iPad/i).test(navigator.userAgent);
         return true; // iOS image, carry on
       }
 
+      $('.loader .message').html('uploading video...');
       $("#upload-yt-video").submit(); // will be captured by ajaxForm
 
       e.preventDefault();
@@ -210,6 +211,8 @@ var IOS = (/iPhone|iPod|iPad/i).test(navigator.userAgent);
         if (venue) description += "Venue: " + venue.join(', ') + '\n';
         description += "Uploaded by: " + username;
 
+        $('.loader .message').html('saving video...');
+        $('.loader .percent').html('');
         updateYouTubeVideo({
           id: res.id,
           token: token,
@@ -235,13 +238,14 @@ var IOS = (/iPhone|iPod|iPad/i).test(navigator.userAgent);
               }
             }
             resetFormElement($("#ugc-media-form [type=file]")); // don't submit the video again
+
+            $('.loader .message').html('saving post...');
             $("#ugc-media-form").submit();
           } // end if updating video was successful
         });
       },
       uploadProgress: function(e, position, total, percent) {
-        if (percent = 100) $('.loader').html(percent + '%' + '<br><br><br><br>saving post...');
-        else $('.loader').html(percent + '%' + '<br><br><br><br>uploading video...');
+        $('.loader .percent').html(percent + '%');
       }
     }); // end handling form ajax response for uploading youtube video
 

@@ -8,7 +8,11 @@ if (is_user_logged_in()) {
   ?>
 
   <article class="masonry-item">
-    <div class="loader"></div>
+    <div class="loader">
+      <span class="percent"></span>
+      <br><br><br><br>
+      <span class="message"></span>
+    </div>
     <section class="entry-content">
       <h1>New Upload</h1>
       <div class="inner">
