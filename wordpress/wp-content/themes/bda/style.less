@@ -4,12 +4,24 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 b { font-weight: bold; }
 em { font-style: italic; }
 
+@darkgray: #181818;
 @duration: 0.4s;
 @menu: #00aeef;
 @menu-hover: lighten(@menu, 30%);
 @performer: #ffd84f;
 @fullwidth: 960px;
 
+@font-face {
+    font-family: 'agency';
+    src: url('fonts/agency-webfont.eot');
+    src: url('fonts/agency-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/agency-webfont.woff2') format('woff2'),
+         url('fonts/agency-webfont.woff') format('woff'),
+         url('fonts/agency-webfont.ttf') format('truetype'),
+         url('fonts/agency-webfont.svg#agencyregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
 @font-face {
   font-family: 'Sathu';
   src: url('fonts/Sathu.eot?') format('eot'), url('fonts/Sathu.woff') format('woff'), url('fonts/Sathu.ttf') format('truetype');
@@ -129,9 +141,9 @@ img {
 }
 
 #header-wrapper {
-  background-color: #0B0B0B;
-  padding: 30px 30px 20px 30px;
-  margin-bottom: 0px;
+  background-color: @darkgray;
+  padding: 10px 30px 5px 30px;
+  margin-bottom: 10px;
 }
 #header {
   text-align: left;
@@ -141,7 +153,19 @@ img {
       margin-top: -7px;
       padding-left: 30px;
       width: auto;
-      height: 80px;
+      height: 120px;
+    }
+  }
+}
+@media screen and (max-width: @fullwidth) {
+  #header {
+    text-align: center;
+    #branding {
+      float: none;
+      #site-title img {
+        padding: 0;
+        margin: 0 0 0 -10px;
+      }
     }
   }
 }
@@ -177,9 +201,11 @@ img {
 /* ==== MENU === */
 
 #menu {
-  .header-font();
+  font-family: agency, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   float: right;
-  font-size: 100%;
+  font-size: 130%;
+  margin-top: 42px;
+  text-align: left;
   li + li { // separator
     margin-left: 10px;
   }
@@ -192,7 +218,7 @@ img {
     z-index: 10;
     display: inline;
     text-transform: uppercase;
-    padding-bottom: 15px; // room for hover to extend to submenu
+    padding: 0 20px;
     &.current-menu-item > a, &.current-menu-ancestor > a {
       font-weight: bold;
       border-bottom: 1px solid #DDD;
@@ -223,7 +249,7 @@ img {
     }
     .sub-menu li { 
       display: block;
-      padding: 0 0 0 10px;
+      padding: 0 0 0 20px;
       margin: 5px 0;
     }
     &:hover .sub-menu {
@@ -239,8 +265,12 @@ img {
   display: none;
 }
 @media screen and (max-width: @fullwidth) {
-  #menu .menu {
-    padding-top: 15px;
+  #menu {
+    float: none;
+    margin-top: 15px;
+    .menu {
+      padding-bottom: 20px;
+    }
   }
 }
 @media screen and (max-width: 768px) {
@@ -253,6 +283,7 @@ img {
   #menu {
     .menu-item-446 { display: inline; } // home menu
     .mobile-selected-menu {
+      z-index: 10000;
       display: block;
       padding: 15px;
       cursor: pointer;
@@ -269,14 +300,17 @@ img {
         margin-right: 4px;
       }
     }
-    float: none;
+    float: left;
     margin-left: 20px;
+    margin-top: 0;
     .menu {
       display: none;
       z-index: 1000;
       position: absolute;
       background-color: rgba(0,0,0,0.85);
       padding: 0 15px;
+      margin-top: -55px;
+      padding-top: 55px;
       li {
         display: block;
         padding-bottom: 0;
@@ -287,8 +321,7 @@ img {
           display: block;
           opacity: 1;
           position: relative;
-          margin-left: 20px;
-          margin-top: 15px;
+          margin-top: 10px;
           top: initial;
           left: initial;
         }
@@ -441,7 +474,7 @@ article.has-video {
       display: inline-block;
       margin: 10px;
       padding-bottom: 10px;
-      background-color: #181818;
+      background-color: @darkgray;
       .entry-content {
         color: white;
         text-align: left;
@@ -718,7 +751,7 @@ ul.tagit, .ugc-input-wrapper textarea {
 .ugc-input-wrapper {
   textarea {
     color: white;
-    background-color: #181818;
+    background-color: @darkgray;
     width: 100%;
   }
 }

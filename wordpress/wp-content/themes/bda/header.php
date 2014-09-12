@@ -51,7 +51,7 @@
       <div id="site-title">
       <?php if ( ! is_singular() ) { echo '<h1>'; } ?>
         <a href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php esc_attr_e( get_bloginfo( 'name' ), 'bda' ); ?>" rel="home">
-          <img src="/img/logo.png" alt="<?php echo esc_html( get_bloginfo( 'name' ) ); ?>" />
+          <img src="/img/logo.gif" alt="<?php echo esc_html( get_bloginfo( 'name' ) ); ?>" />
         </a>
       <?php if ( ! is_singular() ) { echo '</h1>'; } ?>
       </div>
