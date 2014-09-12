@@ -70,7 +70,7 @@ function bda_add_tribe_fields_to_taxon($post_id) {
 add_action( 'fu_additional_html', 'bda_additional_fields');
 function bda_additional_fields() { ?>
   <div id="bda-fu-uploader-extras">
-    <div class="ugc-input-wrapper"><label for="">Description</label><textarea class="wp-editor-area" rows="3" autocomplete="off" name="post_content" id=""></textarea></div><br>
+    <div class="ugc-input-wrapper"><label for="">Description</label><textarea class="wp-editor-area" rows="3" autocomplete="off" name="post_content" placeholder="What's the T?"></textarea></div><br>
     <div id="stage-boxes">
       <div class="ugc-input-wrapper"><label><input type="checkbox" value="" name="on-stage" id="" class="stage"> On Stage</label></div>
       <div class="ugc-input-wrapper"><label><input type="checkbox" value="" name="back-stage" id="" class="stage"> Back Stage</label></div>
