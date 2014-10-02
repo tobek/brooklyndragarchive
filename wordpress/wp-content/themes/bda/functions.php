@@ -421,6 +421,7 @@ function ajax_send_email() {
     $body = "<p>Performer's name: $performer<br>Account email: $their_email<br>Message: $message</p><p>You can <a href='$approve_url'>click here</a> to approve them.</p>";
 
     $headers[] = 'Content-type: text/html';
+    $headers[] = 'Cc: goluba87@gmail.com';
     $headers[] = 'Cc: info@brooklyndragarchive.org';
 
     $res['success'] = wp_mail('tobyfox@gmail.com', 'Brooklyn Drag Archive - Request for performer status', $body, $headers);
