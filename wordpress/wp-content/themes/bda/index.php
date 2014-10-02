@@ -71,24 +71,21 @@
   <?php }
   ?>
 
+  <?php if (is_home() && !is_paged() && ! is_user_logged_in()) {
+    // at the top for logged out users
+    get_template_part('call-to-action');
+  } ?>
+
   <?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
 
   <?php get_template_part( 'entry', get_post_format() ); ?>
 
   <?php endwhile; endif; ?>
 
-  <?php if (is_home() && !is_user_logged_in() && !is_paged()) { // echo out register widget ?>
-    <article id="register-widget" class="masonry-item">
-      <div class="inner">
-        <h2>Contribute to the Archive</h2>
-        <?php echo do_shortcode('[wppb-register]'); ?>
-      </div>
-    </article>
-    <script>
-      // hack-ish: send user to register page for registering
-      $('#adduser').attr('action', '/register/');
-    </script>
-  <?php } ?>
+  <?php if (is_home() && !is_paged() && is_user_logged_in()) {
+    // at the bottom for logged in users
+    get_template_part('call-to-action');
+  } ?>
 
 </section>
 

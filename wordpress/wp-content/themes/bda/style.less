@@ -6,19 +6,21 @@ em { font-style: italic; }
 
 @darkgray: #181818;
 @duration: 0.4s;
-@menu: #00aeef;
-@menu-hover: lighten(@menu, 30%);
+// @menu: #00aeef;
+// @menu-hover: lighten(@menu, 30%);
+@menu: #6fccdd;
+@menu-hover: white;
 @performer: #ffd84f;
 @fullwidth: 960px;
 
 @font-face {
     font-family: 'agency';
-    src: url('fonts/agency-webfont.eot');
-    src: url('fonts/agency-webfont.eot?#iefix') format('embedded-opentype'),
-         url('fonts/agency-webfont.woff2') format('woff2'),
-         url('fonts/agency-webfont.woff') format('woff'),
-         url('fonts/agency-webfont.ttf') format('truetype'),
-         url('fonts/agency-webfont.svg#agencyregular') format('svg');
+    src: url('fonts/agency-fb-regular-webfont.eot');
+    src: url('fonts/agency-fb-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/agency-fb-regular-webfont.woff2') format('woff2'),
+         url('fonts/agency-fb-regular-webfont.woff') format('woff'),
+         url('fonts/agency-fb-regular-webfont.ttf') format('truetype'),
+         url('fonts/agency-fb-regular-webfont.svg#agencyregular') format('svg');
     font-weight: normal;
     font-style: normal;
 }
@@ -610,16 +612,20 @@ article.masonry-item {
   }
 }
 
-#register-widget {
+#cta-widget {
+  height: 350px;
   text-align: left;
   .inner {
-    padding: 10px;
+    padding: 10px 15px;
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
     h2 {
-      .header-font();
-      border-bottom: 2px solid white;
+      font-family: agency, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
       margin-bottom: 15px;
-      font-size: 130%;
+      margin-top: 15%;
       padding: 5px 0;
+      font-size: 200%;
+      text-transform: uppercase;
     }
     p {
       margin-bottom: 5px;
@@ -629,7 +635,29 @@ article.masonry-item {
       }
       label font {
         // optional-indicating asterisks
-        color: #999 !important;
+        display: none;
+      }
+    }
+    &.cta {
+      z-index: 1;
+      color: @menu;
+      background: url('img/pointing.png') center top 15% no-repeat #181818;
+      text-align: center;
+      font-family: agency, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+      line-height: 200%;
+      cursor: pointer;
+      h2 {
+        margin-top: 60%;
+        margin-bottom: 0;
+        font-size: 265%;
+      }
+      span {
+        font-size: 160%;
+      }
+      .transition-two(box-shadow, background-color);
+      &:hover {
+        box-shadow: 0 0 20px 10px #222222;
+        background-color: #222;
       }
     }
   }
