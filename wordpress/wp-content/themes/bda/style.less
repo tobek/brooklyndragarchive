@@ -221,9 +221,13 @@ img {
     display: inline;
     text-transform: uppercase;
     padding: 0 20px;
-    &.current-menu-item > a, &.current-menu-ancestor > a {
-      font-weight: bold;
-      border-bottom: 1px solid #DDD;
+    &.current-menu-item, &.current-menu-ancestor {
+      & > a {
+        font-weight: bold;
+        border-bottom: 1px solid #DDD;
+      }
+      // prevent gap below current menu item breaking hover and preventing you from reaching sub menu:
+      padding-bottom: 5px;
     }
 
     &.menu-item-has-children:after {
