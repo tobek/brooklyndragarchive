@@ -295,7 +295,13 @@ function get_youtube_token() {
   return $token;
 }
 
-
+// really horrible stupid check to detect 99% of our mobile visitors
+// not for use for critical things
+function is_mobile() {
+  $user_agent = $_SERVER['HTTP_USER_AGENT'];
+  if ($user_agent && preg_match('/iPhone|Android|BlackBerry|IEMobile/i', $user_agent)) return true;
+  else return false;
+}
 
 // gets all the terms as associative array of term type => array of terms
 function get_term_object($id = null) {

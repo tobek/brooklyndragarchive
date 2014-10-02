@@ -71,21 +71,30 @@
   <?php }
   ?>
 
-  <?php if (is_home() && !is_paged() && ! is_user_logged_in()) {
-    // at the top for logged out users
-    get_template_part('call-to-action');
-  } ?>
+  <?php
+    // decide whether and where to insert call to action widget
+    if (is_home() && !is_paged()) {
+      $cta = true;
+      $cta_count = 0;
+      if (is_user_logged_in()) $cta_pos = 9;
+      else {
+        if (is_mobile()) $cta_pos = 2; // otherwise real content is below the fold
+        else $cta_pos = 0;
+      }
+    }
+  ?>
 
   <?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
 
-  <?php get_template_part( 'entry', get_post_format() ); ?>
+  <?php
+    if ($cta) {
+      if ($cta_pos == $cta_count) get_template_part('call-to-action');
+      $cta_count++;
+    }
+    get_template_part( 'entry', get_post_format() );
+  ?>
 
   <?php endwhile; endif; ?>
-
-  <?php if (is_home() && !is_paged() && is_user_logged_in()) {
-    // at the bottom for logged in users
-    get_template_part('call-to-action');
-  } ?>
 
 </section>
 
