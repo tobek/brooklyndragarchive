@@ -205,11 +205,11 @@ img {
 #menu {
   font-family: agency, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   float: right;
-  font-size: 130%;
+  font-size: 120%;
   margin-top: 42px;
   text-align: left;
-  li + li { // separator
-    margin-left: 10px;
+  li + li {
+    margin-left: 5px;
   }
   a {
     color: @menu;
@@ -301,8 +301,7 @@ img {
         background-color: @menu;
         width: 18px;
         padding: 2px;
-        vertical-align: text-bottom;
-        margin-top: -5px;
+        vertical-align: top;
         margin-right: 4px;
       }
     }
@@ -736,7 +735,6 @@ article.masonry-item {
   }
 }
 
-// TODO: make responsive
 .performers {
   text-align: left;
   font-size: 250%;
@@ -752,6 +750,10 @@ article.masonry-item {
         color: lighten(@performer, 20%);
       }
     }
+  }
+  @media screen and (max-width: 767px) {
+    font-size: 200%;
+    li { width: 100%; }
   }
 }
 
